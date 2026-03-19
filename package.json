@@ -1,6 +1,6 @@
 {
   "name": "@meldocio/snapwright",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Persistent Playwright browser server with CLI control, auth persistence, and PNG compression",
   "type": "module",
   "main": "src/server.js",
