@@ -127,6 +127,7 @@ function printHelp() {
 snapwright — Playwright browser server CLI
 
 Usage:
+  snapwright install-browsers         Download Chromium (run once after install)
   snapwright start                    Start browser server (headless)
   snapwright start --visible          Start with visible browser window
   snapwright start --port 9998        Custom port

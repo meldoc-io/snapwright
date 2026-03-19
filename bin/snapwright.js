@@ -40,6 +40,17 @@ if (command === 'install-skills') {
 
   console.log('\nDone. Restart Claude Code to activate the skills.');
   process.exit(0);
+} else if (command === 'install-browsers') {
+  const { execFileSync } = await import('child_process');
+  const { createRequire } = await import('module');
+  const require = createRequire(import.meta.url);
+  const playwrightBin = path.join(
+    path.dirname(require.resolve('playwright/package.json')),
+    'cli.js'
+  );
+  console.log('[snapwright] Installing Chromium via bundled Playwright...');
+  execFileSync(process.execPath, [playwrightBin, 'install', 'chromium'], { stdio: 'inherit' });
+  process.exit(0);
 } else if (command === 'start') {
   // Parse start flags
   const headless = !argv.includes('--visible');

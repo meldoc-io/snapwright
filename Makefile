@@ -31,4 +31,4 @@ _tag:
 	git add package.json package-lock.json ; \
 	git commit -m "chore: release v$$NEXT" ; \
 	git tag "v$$NEXT" ; \
-	git push origin main "v$$NEXT"
+	git push origin HEAD "v$$NEXT"

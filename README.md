@@ -12,7 +12,7 @@ Install globally so the `snapwright` command is available system-wide — requir
 
 ```bash
 npm install -g @meldocio/snapwright
-npx playwright install chromium
+snapwright install-browsers
 ```
 
 Verify:
@@ -25,7 +25,7 @@ snapwright --help
 
 ```bash
 npm install @meldocio/snapwright
-npx playwright install chromium
+snapwright install-browsers
 ```
 
 Run via npx or the local binary:
@@ -98,7 +98,7 @@ The agent needs `snapwright` on `PATH`. Global install is the easiest way:
 
 ```bash
 npm install -g @meldocio/snapwright
-npx playwright install chromium
+snapwright install-browsers
 ```
 
 ### 2. Install Claude Code skills
@@ -173,15 +173,13 @@ const stats = await compressPng('./screenshot.png');
 
 ## Publishing a new version
 
-1. Bump version in `package.json`
-2. Commit and push a tag:
-
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+make              # patch: 0.1.1 → 0.1.2
+make release-minor  # minor: 0.1.2 → 0.2.0
+make release-major  # major: 0.2.0 → 1.0.0
 ```
 
-GitHub Actions will publish to npm automatically.
+Bumps `package.json`, commits, tags, and pushes — GitHub Actions publishes to npm automatically.
 
 > **Setup:** Add your npm token as `NPM_TOKEN` in the repository's GitHub Actions secrets.
 
