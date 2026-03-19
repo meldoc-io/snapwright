@@ -1,0 +1,4 @@
+workspaceAlias: meldoc
+projectAlias: snapwright
+baseDir: docs  # root directory to scan for *.meldoc.md files (default: repo root)
+prune: true    # delete remote docs that no longer exist locally on push (default: false)

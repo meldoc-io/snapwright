@@ -1,0 +1,102 @@
+name: Publish Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.meldoc.md"
+      - "meldoc.config.yml"
+  workflow_dispatch:
+    inputs:
+      publish_all:
+        description: "Publish all documentation (ignore diff)"
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      MELDOC_TOKEN: ${{ secrets.MELDOC_TOKEN }}
+    steps:
+      - name: Check token
+        if: ${{ env.MELDOC_TOKEN == '' }}
+        run: |
+          echo "MELDOC_TOKEN secret is not set. Skipping documentation publish."
+          exit 0
+
+      - name: Checkout
+        if: ${{ env.MELDOC_TOKEN != '' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for accurate diff
+
+      - name: Install Meldoc CLI
+        if: ${{ env.MELDOC_TOKEN != '' }}
+        run: |
+          curl -fsSL https://meldoc.io/install.sh | bash -s -- --quiet
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Get changed documentation files
+        if: ${{ env.MELDOC_TOKEN != '' }}
+        id: changed
+        run: |
+          # For manual trigger with publish_all, skip diff detection
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.publish_all }}" == "true" ]]; then
+            echo "Manual trigger with publish_all=true, will publish all docs"
+            echo "publish_all=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get changed files between commits
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            # For push events, compare before and after commits
+            BEFORE="${{ github.event.before }}"
+            AFTER="${{ github.event.after }}"
+
+            # Handle initial commit (before is all zeros)
+            if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+              echo "Initial commit detected, will publish all docs"
+              echo "publish_all=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR "$BEFORE" "$AFTER" | grep '\.meldoc\.md$' || true)
+          else
+            # For workflow_dispatch without publish_all, publish all
+            echo "Manual trigger, will publish all docs"
+            echo "publish_all=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "No .meldoc.md files changed"
+            echo "files=" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            # Convert newlines to spaces for passing as argument
+            FILES_LIST=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+            echo "files=$FILES_LIST" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Scan documentation
+        if: ${{ env.MELDOC_TOKEN != '' && (steps.changed.outputs.publish_all == 'true' || steps.changed.outputs.has_changes == 'true') }}
+        run: meldoc scan
+
+      - name: Push all documentation
+        if: ${{ env.MELDOC_TOKEN != '' && steps.changed.outputs.publish_all == 'true' }}
+        run: meldoc push --token ${{ env.MELDOC_TOKEN }}
+
+      - name: Push changed files only
+        if: ${{ env.MELDOC_TOKEN != '' && steps.changed.outputs.publish_all != 'true' && steps.changed.outputs.has_changes == 'true' }}
+        run: |
+          echo "Pushing changed files: ${{ steps.changed.outputs.files }}"
+          meldoc push --token ${{ env.MELDOC_TOKEN }} ${{ steps.changed.outputs.files }}
+
+      - name: Skip push (no changes)
+        if: ${{ env.MELDOC_TOKEN != '' && steps.changed.outputs.publish_all != 'true' && steps.changed.outputs.has_changes != 'true' }}
+        run: echo "No documentation files changed, skipping push"

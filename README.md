@@ -1,5 +1,9 @@
 # snapwright
 
+
+[![npm version](https://badge.fury.io/js/@meldocio%2Fsnapwright.svg)](https://www.npmjs.com/package/@meldocio/snapwright)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A persistent Playwright browser server with CLI control, session persistence, and PNG compression.
 
 Designed for agent-driven screenshot workflows — start the server once, then send commands from scripts, AI agents, or the terminal.
