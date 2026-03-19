@@ -171,20 +171,6 @@ const stats = await compressPng('./screenshot.png');
 
 ---
 
-## Publishing a new version
-
-```bash
-make              # patch: 0.1.1 → 0.1.2
-make release-minor  # minor: 0.1.2 → 0.2.0
-make release-major  # major: 0.2.0 → 1.0.0
-```
-
-Bumps `package.json`, commits, tags, and pushes — GitHub Actions publishes to npm automatically.
-
-> **Setup:** Add your npm token as `NPM_TOKEN` in the repository's GitHub Actions secrets.
-
----
-
 ## License
 
 MIT
