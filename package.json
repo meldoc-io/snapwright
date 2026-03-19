@@ -1,0 +1,53 @@
+{
+  "name": "@meldocio/snapwright",
+  "version": "0.1.0",
+  "description": "Persistent Playwright browser server with CLI control, auth persistence, and PNG compression",
+  "type": "module",
+  "main": "src/server.js",
+  "exports": {
+    ".": "./src/server.js",
+    "./compress": "./src/compress.js"
+  },
+  "bin": {
+    "snapwright": "bin/snapwright.js"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node bin/snapwright.js start",
+    "start:visible": "HEADLESS=false node bin/snapwright.js start"
+  },
+  "keywords": [
+    "playwright",
+    "screenshot",
+    "browser",
+    "automation",
+    "cli",
+    "headless"
+  ],
+  "author": "Meldoc <hello@meldoc.io>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "playwright": "^1.50.0",
+    "sharp": "^0.33.0"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": false
+    }
+  }
+}
