@@ -1,6 +1,6 @@
 {
   "name": "@meldocio/snapwright",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Persistent Playwright browser server with CLI control, auth persistence, and PNG compression",
   "type": "module",
   "main": "src/server.js",
@@ -30,6 +30,10 @@
     "cli",
     "headless"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meldoc-io/snapwright"
+  },
   "author": "Meldoc <hello@meldoc.io>",
   "license": "MIT",
   "publishConfig": {
