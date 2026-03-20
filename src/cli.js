@@ -4,15 +4,24 @@
  */
 
 import path from 'path';
+import { createRequire } from 'module';
 import { compressPng } from './compress.js';
+
+const _require = createRequire(import.meta.url);
+const { version } = _require('../package.json');
 
 const DEFAULT_PORT = process.env.SNAPWRIGHT_PORT ?? '9999';
 
 export async function runCli(argv) {
   const [command, ...args] = argv;
 
-  if (!command || command === 'help') {
+  if (!command || command === 'help' || command === '--help' || command === '-h') {
     printHelp();
+    process.exit(0);
+  }
+
+  if (command === 'version' || command === '--version' || command === '-v') {
+    console.log(version);
     process.exit(0);
   }
 
